@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="brand_navy">#1F3D2B</color>
+    <color name="brand_orange">#C39A3C</color>
+    <style name="AppTheme" parent="@android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:colorPrimary">@color/brand_navy</item>
+        <item name="android:colorPrimaryDark">@color/brand_navy</item>
+        <item name="android:colorAccent">@color/brand_orange</item>
+        <item name="android:statusBarColor">@color/brand_navy</item>
+        <item name="android:navigationBarColor">@color/brand_navy</item>
+        <item name="android:windowBackground">@color/brand_navy</item>
+    </style>
+</resources>

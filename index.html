@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#1f3d2b" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="description" content="Poesia Garden Cafe — masa ve adisyon, mutfak & bar ekranı, paket servis, rezervasyon, kasa ve raporlar" />
+  <title>Poesia Garden Cafe</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" type="image/svg+xml" href="icons/logo.svg" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="stylesheet" href="styles.css?v=100" />
+</head>
+<body>
+  <div id="login" class="login" hidden>
+    <form id="loginForm" class="login-card" autocomplete="on">
+      <img src="icons/logo.svg" width="96" height="96" alt="" />
+      <h1 id="loginTitle">Poesia Garden Cafe</h1>
+      <p class="muted">Adisyon · Masa · Mutfak · Kasa</p>
+      <label class="field"><span>Kullanıcı adı</span><input id="loginUser" autocomplete="username" autocapitalize="none" required /></label>
+      <label class="field"><span>PIN</span><input id="loginPin" type="password" inputmode="numeric" autocomplete="current-password" required /></label>
+      <p id="loginErr" class="danger-text"></p>
+      <button class="btn primary wide big">Giriş</button>
+      <small id="loginHint" class="muted">İlk giriş: <b>poesia</b> / PIN <b>1234</b></small>
+    </form>
+  </div>
+
+  <div id="app" class="app" hidden>
+    <aside class="side">
+      <div class="brand">
+        <img src="icons/logo.svg" width="40" height="40" alt="" />
+        <div><strong id="brandName">Poesia Garden Cafe</strong><span>Adisyon & Kasa</span></div>
+      </div>
+      <nav id="nav"></nav>
+      <div class="side-foot">
+        <div class="user-chip"><span id="userInitials">P</span><div><b id="userName"></b><small id="userRole"></small></div></div>
+        <div class="row-gap"><button id="themeBtn" class="btn ghost sm" type="button">🌙 Tema</button><button id="logoutBtn" class="btn ghost sm" type="button">🔒 Çıkış</button></div>
+      </div>
+    </aside>
+    <div class="nav-backdrop" data-go-close onclick="document.body.classList.remove('nav-open')"></div>
+    <main>
+      <header class="top">
+        <button class="menu-btn" id="menuBtn" type="button" aria-label="Menü">☰</button>
+        <div><h2 id="pageTitle"></h2><small id="clock"></small></div>
+      </header>
+      <section id="view"></section>
+    </main>
+  </div>
+
+  <dialog id="modal"></dialog>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <div id="printArea" class="print-area"></div>
+  <script src="app.js?v=100"></script>
+</body>
+</html>

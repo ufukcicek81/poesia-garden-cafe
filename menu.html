@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#1f3d2b" />
+  <title>Menü · Poesia Garden Cafe</title>
+  <link rel="icon" type="image/svg+xml" href="icons/logo.svg" />
+  <style>
+    :root{--bg:#f5f1e6;--card:#fffdf7;--line:#e4dcc6;--text:#1e2a20;--muted:#6b7565;--green:#2f6b45;--gold:#c39a3c;--head:#1f3d2b}
+    @media (prefers-color-scheme:dark){:root{--bg:#121814;--card:#1a221c;--line:#2f3b31;--text:#e9efe6;--muted:#9aa696;--green:#6cc08a;--gold:#d8b45a;--head:#0e1510}}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+    header{background:var(--head);color:#f5e8c4;text-align:center;padding:28px 16px 22px}
+    header img{width:72px;height:72px}
+    header h1{margin:8px 0 2px;font-family:Georgia,"Times New Roman",serif;font-weight:normal;font-size:1.9em;letter-spacing:.02em}
+    header p{margin:2px 0;opacity:.8;font-size:.9em}
+    nav{position:sticky;top:0;z-index:2;background:var(--bg);display:flex;gap:6px;overflow-x:auto;padding:10px 16px;border-bottom:1px solid var(--line);scrollbar-width:none}
+    nav::-webkit-scrollbar{display:none}
+    nav a{flex:none;text-decoration:none;color:var(--text);border:1px solid var(--line);background:var(--card);padding:7px 14px;border-radius:99px;font-size:.92em;white-space:nowrap}
+    nav a.active{background:var(--green);border-color:var(--green);color:#fff}
+    main{max-width:720px;margin:0 auto;padding:8px 16px 40px}
+    section{scroll-margin-top:64px}
+    h2{font-family:Georgia,serif;font-weight:normal;color:var(--green);font-size:1.4em;margin:24px 0 6px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+    .item{display:flex;gap:10px;align-items:baseline;padding:10px 0;border-bottom:1px dashed var(--line)}
+    .item:last-child{border:0}
+    .item div{flex:1}
+    .item b{font-weight:600}
+    .item small{display:block;color:var(--muted)}
+    .price{font-weight:700;color:var(--gold);white-space:nowrap}
+    .sold{opacity:.5}.sold .price{color:var(--muted);font-weight:600;font-size:.85em}
+    footer{text-align:center;color:var(--muted);font-size:.85em;padding:0 16px 30px}
+    .wifi{display:inline-block;margin-top:8px;background:#ffffff1a;padding:4px 12px;border-radius:99px}
+    [hidden]{display:none!important}
+    .msg{text-align:center;color:var(--muted);padding:40px 0}
+  </style>
+</head>
+<body>
+  <header>
+    <img src="icons/logo.svg" alt="" />
+    <h1 id="name">Poesia Garden Cafe</h1>
+    <p id="info"></p>
+    <span class="wifi" id="wifi" hidden></span>
+  </header>
+  <nav id="nav"></nav>
+  <main id="menu"><p class="msg">Menü yükleniyor…</p></main>
+  <footer id="foot"></footer>
+  <script>
+  'use strict';
+  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const money=n=>'₺'+(Math.round(Number(n)*100)/100).toLocaleString('tr-TR',{minimumFractionDigits:0,maximumFractionDigits:2});
+  // Aynı cihazda önizleme: menu.json yoksa uygulamanın kayıtlı verisinden oluştur
+  function fromLocal(){
+    try{
+      const s=JSON.parse(localStorage.getItem('poesia-garden-cafe'));if(!s)return null;
+      const st=s.settings||{};
+      return {name:st.name,phone:st.phone,address:st.address,instagram:st.instagram,wifi:st.wifi,updatedAt:new Date().toISOString(),
+        categories:[...s.categories].sort((a,b)=>(a.order||0)-(b.order||0)).map(c=>({name:c.name,icon:c.icon,items:s.products.filter(p=>p.catId===c.id&&p.active).map(p=>({name:p.name,price:p.price,desc:p.desc,soldOut:!!p.soldOut}))})).filter(c=>c.items.length)};
+    }catch{return null}
+  }
+  function show(m){
+    document.title=`Menü · ${m.name||'Poesia Garden Cafe'}`;
+    document.getElementById('name').textContent=m.name||'Poesia Garden Cafe';
+    document.getElementById('info').textContent=[m.address,m.phone,m.instagram].filter(Boolean).join(' · ');
+    if(m.wifi){const w=document.getElementById('wifi');w.hidden=false;w.textContent='📶 Wi-Fi: '+m.wifi}
+    const cats=m.categories||[];
+    document.getElementById('nav').innerHTML=cats.map((c,i)=>`<a href="#c${i}">${esc(c.icon||'')} ${esc(c.name)}</a>`).join('');
+    document.getElementById('menu').innerHTML=cats.map((c,i)=>`<section id="c${i}"><h2>${esc(c.icon||'')} ${esc(c.name)}</h2>${c.items.map(it=>`<div class="item ${it.soldOut?'sold':''}"><div><b>${esc(it.name)}</b>${it.desc?`<small>${esc(it.desc)}</small>`:''}</div><span class="price">${it.soldOut?'Tükendi':money(it.price)}</span></div>`).join('')}</section>`).join('')||'<p class="msg">Menü henüz yayınlanmadı.</p>';
+    if(m.updatedAt)document.getElementById('foot').textContent=`Fiyatlara KDV dahildir · Güncelleme: ${new Date(m.updatedAt).toLocaleDateString('tr-TR')}`;
+    const links=[...document.querySelectorAll('nav a')],secs=[...document.querySelectorAll('section')];
+    let last=-1;
+    const spy=()=>{let cur=0;secs.forEach((s,i)=>{if(s.getBoundingClientRect().top<90)cur=i});if(cur===last)return;last=cur;links.forEach((a,i)=>a.classList.toggle('active',i===cur));const a=links[cur];if(a){const n=a.parentElement;n.scrollLeft=a.offsetLeft-n.clientWidth/2+a.clientWidth/2}};
+    addEventListener('scroll',spy,{passive:true});spy();
+  }
+  fetch('menu.json',{cache:'no-store'}).then(r=>r.ok?r.json():Promise.reject()).then(show)
+    .catch(()=>{const m=fromLocal();if(m)show(m);else document.getElementById('menu').innerHTML='<p class="msg">Menü henüz yayınlanmadı.</p>'});
+  </script>
+</body>
+</html>
